@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blookoff 🌈</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#291748;--purple:#7648d9;--white:#fff;--gold:#ffca46}
+body{
+ margin:0;min-height:100vh;color:var(--ink);
+ font-family:system-ui,-apple-system,Arial,sans-serif;
+ background:linear-gradient(120deg,#ff8bb5,#ffcc80,#fff38b,#8bf0b0,#83ddff,#c0a0ff,#ff9cde);
+ background-size:400% 400%;animation:rainbow 16s ease infinite
+}
+@keyframes rainbow{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+header{background:#24143fee;color:white;text-align:center;padding:17px 12px;box-shadow:0 5px 20px #0002}
+.logo{font-size:clamp(35px,7vw,55px);font-weight:1000;letter-spacing:2px;text-shadow:3px 4px #0004}
+header p{margin:0;color:#e6d8ff}
+.stats{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;padding:12px}
+.pill{background:white;border-radius:30px;padding:8px 13px;font-weight:850;box-shadow:0 3px 10px #30204c18}
+nav{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;padding:4px 10px 12px}
+button{font:inherit;font-weight:800;border:0;border-radius:12px;padding:11px 14px;cursor:pointer;transition:transform .12s,filter .12s}
+button:hover{filter:brightness(1.05);transform:translateY(-2px)}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.navbtn{background:white;color:#3b275a;box-shadow:0 3px 8px #0001}
+.navbtn.active{background:#38205f;color:white}
+main{max-width:1050px;margin:auto;padding:0 13px 30px}
+.panel{background:#ffffffed;border:2px solid #ffffffbb;border-radius:22px;padding:20px;margin:10px 0;box-shadow:0 8px 26px #43205b1c}
+.hidden{display:none!important}
+h1,h2,h3{margin-top:0}
+h2{font-size:25px}
+p{line-height:1.5}
+.muted{color:#6c5a82}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:13px}
+.tile{background:white;border:2px solid #e9ddff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:9px;min-width:0}
+.tile h3{margin:0}
+.tile p{margin:0}
+.emoji{font-size:48px}
+.primary{background:linear-gradient(120deg,#7955e8,#aa4fe1);color:white}
+.green{background:#20aa79;color:white}
+.gold{background:#ffce50;color:#513400}
+.red{background:#ed687b;color:white}
+.blue{background:#3e9fe9;color:white}
+.small{font-size:13px;padding:7px 10px}
+.hero{text-align:center;padding:28px 14px}
+.hero h1{font-size:clamp(29px,6vw,44px);margin-bottom:8px}
+.hero p{max-width:650px;margin:8px auto 20px}
+.big{font-size:55px}
+.question{font-size:clamp(21px,4vw,30px);font-weight:900;line-height:1.35;margin:18px 0}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.answer{min-height:62px;background:white;border:2px solid #e5dcff;color:#34224e}
+.feedback{font-weight:900;font-size:17px;min-height:27px;margin:15px 0}
+.progress{height:13px;background:#eee;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:linear-gradient(90deg,#31c88b,#69b7ff,#a267ee);width:0%;transition:width .3s}
+.character{font-size:52px;background:#f3ecff;border-radius:18px;text-align:center;padding:12px}
+.rarity{text-transform:uppercase;font-size:12px;font-weight:900;letter-spacing:1px;color:#7656bc}
+input,select{font:inherit;padding:11px;border:2px solid #ded2f4;border-radius:10px;width:100%;margin:5px 0 12px}
+label{font-weight:800}
+hr{border:0;border-top:1px solid #e8def7;margin:18px 0}
+footer{text-align:center;padding:18px;color:#39255e;font-weight:750}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:100002;background:#24143f;color:white;padding:12px 18px;border-radius:14px;box-shadow:0 5px 20px #0004;text-align:center;width:max-content;max-width:90%;font-weight:800}
+.confetti-piece{position:fixed;top:-22px;z-index:100000;pointer-events:none;animation:confetti-fall 2.8s ease-in forwards}
+@keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(900deg);opacity:0}}
+.overlay{position:fixed;inset:0;background:#211238bb;z-index:100001;display:flex;align-items:center;justify-content:center;padding:18px}
+.reward-box{width:min(420px,100%);background:white;border:4px solid #ffe16b;border-radius:25px;text-align:center;padding:24px;box-shadow:0 15px 60px #0005;animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.reward-emoji{font-size:95px;animation:bounce 1s infinite alternate}
+@keyframes bounce{to{transform:translateY(-8px) rotate(5deg)}}
+.reward-title{font-size:26px;font-weight:1000}
+.reward-name{font-size:23px;font-weight:900;margin:8px}
+.rainbow-line{height:8px;border-radius:20px;background:linear-gradient(90deg,red,orange,yellow,lime,cyan,blue,violet);margin:14px 0}
+@media(max-width:520px){.answers{grid-template-columns:1fr}.panel{padding:15px}.logo{letter-spacing:0}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">🌈 BLOOKOFF</div>
+ <p>PLAY • COLLECT • UNLOCK • REPEAT</p>
+</header>
+
+<div class="stats">
+ <div class="pill">🪙 Tokens: <span id="tokens">0</span></div>
+ <div class="pill">🐾 Blooks: <span id="ownedCount">1</span></div>
+ <div class="pill">⭐ Correct: <span id="correctCount">0</span></div>
+</div>
+
+<nav>
+ <button class="navbtn active" data-page="home">🏠 Home</button>
+ <button class="navbtn" data-page="modes">🎮 Modes</button>
+ <button class="navbtn" data-page="market">🎁 Boxes</button>
+ <button class="navbtn" data-page="blooks">🐾 My Blooks</button>
+ <button class="navbtn" data-page="admin">🔐 Admin</button>
+</nav>
+
+<main>
+<section id="home" class="page panel hero">
+ <div class="big">🌈🎮🐾</div>
+ <h1>WELCOME TO BLOOKOFF!</h1>
+ <p>Play mini-games, answer questions, earn tokens, open mystery boxes and build your collection!</p>
+ <button class="primary" onclick="showPage('modes')">LET'S PLAY! 🚀</button>
+ <button class="gold" onclick="showPage('market')">OPEN BOXES 🎁</button>
+ <hr>
+ <h2>👑 THE SECRET BLOOK</h2>
+ <div class="big">🍜</div>
+ <h3>Secret Noodle Legend</h3>
+ <p>Inspired by your secret Thinknoodles Blook idea!</p>
+ <div class="progress"><div id="secretProgress"></div></div>
+ <strong><span id="secretTokens">0</span> / 1,000,000,000 tokens</strong>
+ <p class="muted">Save up one BILLION tokens to unlock it!</p>
+</section>
+
+<section id="modes" class="page panel hidden">
+ <h2>🎮 Choose Your Game Mode</h2>
+ <p class="muted">Five original Blookoff mini-games with different gameplay twists.</p>
+ <div class="grid">
+  <div class="tile"><div class="emoji">☕</div><h3>Cafe Rush</h3><p>Serve customers by answering questions correctly.</p><button class="primary" onclick="startGame('cafe')">Play Cafe Rush</button></div>
+  <div class="tile"><div class="emoji">👾</div><h3>Monster Brawl</h3><p>Answer correctly to attack monsters and beat your score.</p><button class="primary" onclick="startGame('monster')">Start Brawl</button></div>
+  <div class="tile"><div class="emoji">💻</div><h3>Crypto Hack</h3><p>Crack quiz codes and earn bonus tokens.</p><button class="primary" onclick="startGame('crypto')">Start Hacking</button></div>
+  <div class="tile"><div class="emoji">💰</div><h3>Gold Quest</h3><p>Answer questions and earn gold rewards.</p><button class="primary" onclick="startGame('gold')">Find Gold</button></div>
+  <div class="tile"><div class="emoji">🧪</div><h3>Science Sprint</h3><p>Test your knowledge of cells, water, space and more.</p><button class="primary" onclick="startGame('science')">Start Sprint</button></div>
+ </div>
+</section>
+
+<section id="play" class="page panel hidden">
+ <button class="navbtn small" onclick="showPage('modes')">← All Modes</button>
+ <h2 id="modeTitle">🎮 Game</h2>
+ <p id="modeDescription" class="muted"></p>
+ <div class="progress"><div id="roundProgress"></div></div>
+ <p>Question <span id="roundNum">1</span> of <span id="roundTotal">10</span></p>
+ <div id="battleStatus" class="pill">Ready!</div>
+ <div id="question" class="question"></div>
+ <div id="answers" class="answers"></div>
+ <div id="feedback" class="feedback"></div>
+ <button id="nextBtn" class="primary hidden" onclick="nextQuestion()">Next Question ➜</button>
+</section>
+
+<section id="market" class="page panel hidden">
+ <h2>🎁 MYSTERY BOX SHOP</h2>
+ <p>Every box opening triggers a confetti explosion! 🎉 Each box contains a random collectible. Duplicate Blooks give you a token refund.</p>
+ <div class="grid" id="boxGrid"></div>
+ <hr>
+ <div class="tile">
+  <div class="emoji">👑</div>
+  <h3>SECRET NOODLE LEGEND</h3>
+  <p>Cost: <strong>1,000,000,000 tokens</strong></p>
+  <p class="muted">Your super-secret, fan-made collectible!</p>
+  <button class="gold" onclick="unlockSecret()">UNLOCK FOR 1 BILLION 🤑</button>
+  <p id="secretMessage" class="feedback"></p>
+ </div>
+</section>
+
+<section id="blooks" class="page panel hidden">
+ <h2>🐾 MY BLOOK COLLECTION</h2>
+ <p>Collect characters from boxes and select your favourite!</p>
+ <div class="grid" id="blookGrid"></div>
+</section>
+
+<section id="admin" class="page panel hidden">
+ <h2>🔐 BLOOKOFF ADMIN PANEL</h2>
+ <p class="muted">Local demo panel. The password is included in this HTML file, so this is not secure for a public website.</p>
+ <div id="adminLogin">
+  <label for="adminPassword">Admin password</label>
+  <input id="adminPassword" type="password" placeholder="Enter admin password">
+  <button class="primary" onclick="loginAdmin()">Login</button>
+  <p id="adminMessage" class="feedback"></p>
+ </div>
+ <div id="adminTools" class="hidden">
+  <h3>🪙 Give Yourself Tokens</h3>
+  <input id="grantTokens" type="number" min="0" max="1000000000" value="1000">
+  <button class="green" onclick="grantTokens()">Grant Tokens</button>
+  <hr>
+  <h3>🧠 Add a Question</h3>
+  <label for="newQuestion">Question</label>
+  <input id="newQuestion" placeholder="Write a question">
+  <label for="newAnswer">Correct answer</label>
+  <input id="newAnswer" placeholder="Correct answer">
+  <label for="wrongOne">Wrong answer 1</label>
+  <input id="wrongOne" placeholder="Wrong answer">
+  <label for="wrongTwo">Wrong answer 2</label>
+  <input id="wrongTwo" placeholder="Wrong answer">
+  <label for="wrongThree">Wrong answer 3</label>
+  <input id="wrongThree" placeholder="Wrong answer">
+  <label for="newSubject">Subject</label>
+  <select id="newSubject"><option>Science</option><option>Biology</option><option>Chemistry</option><option>Math</option><option>Geography</option><option>History</option><option>English</option><option>Technology</option></select>
+  <button class="primary" onclick="addQuestion()">Add Question</button>
+  <hr>
+  <h3>📊 Local Game Stats</h3>
+  <p>Total completed rounds: <strong id="roundCount">0</strong></p>
+  <p>Boxes opened: <strong id="boxCount">0</strong></p>
+  <button class="red" onclick="resetProgress()">Reset All Local Progress</button>
+  <button class="navbtn" onclick="logoutAdmin()">Log Out</button>
+ </div>
+</section>
+</main>
+
+<footer>🌈 BLOOKOFF — YOUR ADVENTURE STARTS HERE! 🌈</footer>
+
+<div id="toast" class="hidden" role="status"></div>
+<div id="rewardOverlay" class="overlay hidden" role="dialog" aria-modal="true">
+ <div class="reward-box">
+  <div class="rainbow-line"></div>
+  <div id="rewardEmoji" class="reward-emoji">🎁</div>
+  <div id="rewardTitle" class="reward-title">BOX OPENED!</div>
+  <div id="rewardName" class="reward-name">You found a Blook!</div>
+  <p id="rewardDescription"></p>
+  <div class="rainbow-line"></div>
+  <button class="primary" onclick="closeReward()">AWESOME! 🎉</button>
+ </div>
+</div>
+
+<script>
+"use strict";
+
+const ADMIN_PASSWORD = "rainbow123"; // Demo only; not secure for public use.
+const SECRET_PRICE = 1000000000;
+
+const initialQuestions = [
+ {q:"What is the basic unit of life?",a:"The cell",w:["The atom","The organ","The tissue"],s:"Biology"},
+ {q:"Which organelle is known as the powerhouse of the cell?",a:"Mitochondrion",w:["Nucleus","Ribosome","Cell wall"],s:"Biology"},
+ {q:"What process changes liquid water into water vapor?",a:"Evaporation",w:["Condensation","Freezing","Precipitation"],s:"Science"},
+ {q:"What do plants absorb from the air for photosynthesis?",a:"Carbon dioxide",w:["Oxygen only","Helium","Nitrogen only"],s:"Biology"},
+ {q:"What is the chemical formula for water?",a:"H₂O",w:["CO₂","O₂","NaCl"],s:"Chemistry"},
+ {q:"Which planet is known as the Red Planet?",a:"Mars",w:["Venus","Jupiter","Mercury"],s:"Science"},
+ {q:"How many sides does a hexagon have?",a:"6",w:["5","7","8"],s:"Math"},
+ {q:"What is 9 × 7?",a:"63",w:["56","72","49"],s:"Math"},
+ {q:"What is the largest ocean on Earth?",a:"Pacific Ocean",w:["Atlantic Ocean","Indian Ocean","Arctic Ocean"],s:"Geography"},
+ {q:"Which gas do humans need to breathe to survive?",a:"Oxygen",w:["Carbon dioxide","Hydrogen","Neon"],s:"Science"},
+ {q:"What is the freezing point of water in Celsius?",a:"0°C",w:["10°C","32°C","100°C"],s:"Science"},
+ {q:"Which part of a plant usually absorbs water from soil?",a:"Roots",w:["Flowers","Leaves","Fruit"],s:"Biology"},
+ {q:"What is the opposite of ancient?",a:"Modern",w:["Old","Historic","Past"],s:"English"},
+ {q:"How many continents are in the seven-continent model?",a:"7",w:["5","6","8"],s:"Geography"},
+ {q:"Which star is closest to Earth?",a:"The Sun",w:["Sirius","Polaris","Betelgeuse"],s:"Science"},
+ {q:"What is 100 divided by 4?",a:"25",w:["20","40","10"],s:"Math"},
+ {q:"Which force pulls objects toward Earth?",a:"Gravity",w:["Friction","Magnetism only","Electricity"],s:"Science"},
+ {q:"What do bees collect from flowers?",a:"Nectar",w:["Sand","Leaves","Tree bark"],s:"Science"},
+ {q:"Which language structures the content of webpages?",a:"HTML",w:["MP3","PNG","ZIP"],s:"Technology"},
+ {q:"Which ocean lies between Africa and Australia?",a:"Indian Ocean",w:["Arctic Ocean","Southern Ocean","Atlantic Ocean"],s:"Geography"},
+ {q:"What is the center of an atom called?",a:"The nucleus",w:["The cell","The shell","The electron"],s:"Science"},
+ {q:"Which state of matter has a fixed shape and volume?",a:"Solid",w:["Liquid","Gas","Plasma only"],s:"Science"},
+ {q:"What is 12 × 12?",a:"144",w:["124","132","154"],s:"Math"},
+ {q:"Which planet is famous for its rings?",a:"Saturn",w:["Earth","Mars","Mercury"],s:"Science"},
+ {q:"What is the main source of energy for Earth's water cycle?",a:"The Sun",w:["The Moon","Volcanoes","The ocean floor"],s:"Science"},
+ {q:"What is precipitation in the water cycle?",a:"Water falling from clouds",w:["Water turning to vapor","Clouds disappearing","Water soaking into rock"],s:"Science"},
+ {q:"Which part of a cell contains most of its genetic material?",a:"The nucleus",w:["Cell membrane","Cytoplasm only","Cell wall"],s:"Biology"},
+ {q:"What is the opposite of expand?",a:"Contract",w:["Increase","Stretch","Enlarge"],s:"English"},
+ {q:"Which instrument measures temperature?",a:"Thermometer",w:["Compass","Ruler","Stopwatch"],s:"Science"},
+ {q:"What is 3 squared?",a:"9",w:["6","12","27"],s:"Math"}
+];
+
+const characters = [
+ {id:"starter",name:"Rainbow Buddy",emoji:"🌈",rarity:"Common"},
+ {id:"cat",name:"Happy Cat",emoji:"🐱",rarity:"Common"},
+ {id:"frog",name:"Jumpy Frog",emoji:"🐸",rarity:"Common"},
+ {id:"dog",name:"Pixel Pup",emoji:"🐶",rarity:"Common"},
+ {id:"fox",name:"Fire Fox",emoji:"🦊",rarity:"Uncommon"},
+ {id:"bee",name:"Buzz Bee",emoji:"🐝",rarity:"Uncommon"},
+ {id:"panda",name:"Panda Pal",emoji:"🐼",rarity:"Uncommon"},
+ {id:"dragon",name:"Pixel Dragon",emoji:"🐉",rarity:"Rare"},
+ {id:"alien",name:"Space Alien",emoji:"👽",rarity:"Rare"},
+ {id:"shark",name:"Turbo Shark",emoji:"🦈",rarity:"Rare"},
+ {id:"unicorn",name:"Rainbow Unicorn",emoji:"🦄",rarity:"Epic"},
+ {id:"phoenix",name:"Golden Phoenix",emoji:"🔥",rarity:"Epic"},
+ {id:"crown",name:"Crown Champion",emoji:"👑",rarity:"Legendary"},
+ {id:"noodle",name:"Secret Noodle Legend",emoji:"🍜",rarity:"Secret"}
+];
+
+const boxes = [
+ {name:"Starter Box",emoji:"📦",price:100,tiers:["Common","Uncommon"]},
+ {name:"Rainbow Box",emoji:"🌈",price:500,tiers:["Uncommon","Rare"]},
+ {name:"Galaxy Box",emoji:"🌌",price:2500,tiers:["Rare","Epic"]},
+ {name:"Legend Box",emoji:"👑",price:10000,tiers:["Epic","Legendary"]}
+];
+
+const defaultSave = () => ({
+ tokens:0,correct:0,rounds:0,owned:["starter"],active:"starter",
+ unlockedSecret:false,questions:initialQuestions.map(q=>({...q,w:[...q.w]})),
+ openedBoxes:0
+});
+
+function loadSave(){
+ try{
+  const stored=JSON.parse(localStorage.getItem("blookoffSave"));
+  if(!stored || typeof stored!=="object") return defaultSave();
+  const base=defaultSave();
+  const merged={...base,...stored};
+  if(!Array.isArray(merged.owned)||!merged.owned.length)merged.owned=["starter"];
+  if(!Array.isArray(merged.questions)||!merged.questions.length)merged.questions=base.questions;
+  merged.tokens=Math.max(0,Number(merged.tokens)||0);
+  merged.correct=Math.max(0,Number(merged.correct)||0);
+  merged.rounds=Math.max(0,Number(merged.rounds)||0);
+  merged.openedBoxes=Math.max(0,Number(merged.openedBoxes)||0);
+  return merged;
+ }catch(e){return defaultSave();}
+}
+
+let data=loadSave();
+let currentMode="gold",round=0,score=0,monsterHP=100;
+let questionList=[],currentQuestion=null,answered=false;
+let adminUnlocked=false,toastTimer=null;
+
+function save(){
+ try{localStorage.setItem("blookoffSave",JSON.stringify(data));}
+ catch(e){showToast("⚠️ Could not save. Your browser storage may be full.");}
+ updateStats();
+}
+
+function updateStats(){
+ document.getElementById("tokens").textContent=Number(data.tokens).toLocaleString();
+ document.getElementById("ownedCount").textContent=data.owned.length;
+ document.getElementById("correctCount").textContent=data.correct;
+ document.getElementById("secretTokens").textContent=Number(data.tokens).toLocaleString();
+ document.getElementById("secretProgress").style.width=Math.min(100,data.tokens/SECRET_PRICE*100)+"%";
+ document.getElementById("roundCount").textContent=data.rounds;
+ document.getElementById("boxCount").textContent=data.openedBoxes;
+}
+
+function showToast(message){
+ const el=document.getElementById("toast");
+ el.textContent=message;el.classList.remove("hidden");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.add("hidden"),2600);
+}
+
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".navbtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ if(id==="market")renderBoxes();
+ if(id==="blooks")renderBlooks();
+ if(id==="admin"){
+  if(!adminUnlocked){
+   document.getElementById("adminLogin").classList.remove("hidden");
+   document.getElementById("adminTools").classList.add("hidden");
+  }else updateStats();
+ }
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.querySelectorAll(".navbtn[data-page]").forEach(b=>{
+ b.addEventListener("click",()=>showPage(b.dataset.page));
+});
+
+function launchConfetti(amount=160){
+ const colors=["#ff3864","#ffce45","#42e695","#40c4ff","#b967ff","#ff7de9","#ffffff","#ff8d42"];
+ for(let i=0;i<amount;i++){
+  const piece=document.createElement("div");
+  piece.className="confetti-piece";
+  const size=6+Math.random()*9;
+  piece.style.left=Math.random()*100+"vw";
+  piece.style.width=size+"px";
+  piece.style.height=(size*1.4)+"px";
+  piece.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+  piece.style.borderRadius=Math.random()>.5?"50%":"2px";
+  piece.style.animationDelay=(Math.random()*.7)+"s";
+  piece.style.animationDuration=(2+Math.random()*1.6)+"s";
+  document.body.appendChild(piece);
+  piece.addEventListener("animationend",()=>piece.remove(),{once:true});
+ }
+}
+
+function showReward(emoji,title,name,description){
+ document.getElementById("rewardEmoji").textContent=emoji;
+ document.getElementById("rewardTitle").textContent=title;
+ document.getElementById("rewardName").textContent=name;
+ document.getElementById("rewardDescription").textContent=description;
+ document.getElementById("rewardOverlay").classList.remove("hidden");
+}
+function closeReward(){
+ document.getElementById("rewardOverlay").classList.add("hidden");
+}
+document.getElementById("rewardOverlay").addEventListener("click",e=>{
+ if(e.target.id==="rewardOverlay")closeReward();
+});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closeReward();
+});
+
+function startGame(mode){
+ currentMode=mode;round=0;score=0;monsterHP=100;
+ const names={cafe:"☕ Cafe Rush",monster:"👾 Monster Brawl",crypto:"💻 Crypto Hack",gold:"💰 Gold Quest",science:"🧪 Science Sprint"};
+ const descriptions={
+  cafe:"Serve customers by answering correctly. Correct answers earn 25 tokens.",
+  monster:"Correct answers damage the monster. Every few correct answers defeat a monster!",
+  crypto:"Crack the quiz codes. Correct answers earn 30 tokens.",
+  gold:"Answer questions to collect gold. Correct answers earn 20 tokens.",
+  science:"Race through science and general knowledge. Correct answers earn 25 tokens."
+ };
+ document.getElementById("modeTitle").textContent=names[mode];
+ document.getElementById("modeDescription").textContent=descriptions[mode];
+ questionList=data.questions.slice().sort(()=>Math.random()-.5).slice(0,10);
+ if(!questionList.length)questionList=initialQuestions.slice(0,10);
+ document.getElementById("nextBtn").onclick=nextQuestion;
+ showPage("play");loadQuestion();
+}
+
+function loadQuestion(){
+ if(round>=questionList.length){endGame();return;}
+ answered=false;currentQuestion=questionList[round];
+ document.getElementById("roundNum").textContent=round+1;
+ document.getElementById("roundTotal").textContent=questionList.length;
+ document.getElementById("roundProgress").style.width=(round/questionList.length*100)+"%";
+ document.getElementById("question").textContent=currentQuestion.q;
+ document.getElementById("feedback").textContent="";
+ document.getElementById("nextBtn").classList.add("hidden");
+ const status=document.getElementById("battleStatus");
+ if(currentMode==="cafe")status.textContent="☕ Customers served: "+score;
+ else if(currentMode==="monster")status.textContent="👾 Monster HP: "+monsterHP+" | Score: "+score;
+ else if(currentMode==="crypto")status.textContent="💻 Codes cracked: "+score;
+ else status.textContent="⭐ Score: "+score;
+
+ const opts=[currentQuestion.a,...currentQuestion.w].sort(()=>Math.random()-.5);
+ const area=document.getElementById("answers");area.innerHTML="";
+ opts.forEach(opt=>{
+  const b=document.createElement("button");
+  b.className="answer";b.textContent=opt;
+  b.onclick=()=>answerQuestion(opt,b);
+  area.appendChild(b);
+ });
+}
+
+function answerQuestion(choice,button){
+ if(answered)return;
+ answered=true;
+ const correct=choice===currentQuestion.a;
+ document.querySelectorAll(".answer").forEach(b=>{
+  b.disabled=true;
+  if(b.textContent===currentQuestion.a)b.style.borderColor="#27b77d";
+ });
+ let reward=0,feedback="";
+ if(correct){
+  data.correct++;score++;
+  reward=currentMode==="crypto"?30:(currentMode==="cafe"||currentMode==="science")?25:20;
+  data.tokens+=reward;
+  if(currentMode==="monster"){
+   monsterHP-=25;
+   if(monsterHP<=0){
+    monsterHP=100;
+    feedback="💥 MONSTER DEFEATED! +"+reward+" tokens! Another monster appears!";
+    launchConfetti(70);
+   }else feedback="💥 Direct hit! The monster loses 25 HP! +"+reward+" tokens!";
+  }else if(currentMode==="cafe")feedback="☕ Order served! +"+reward+" tokens!";
+  else if(currentMode==="crypto")feedback="💻 CODE CRACKED! +"+reward+" tokens!";
+  else if(currentMode==="gold")feedback="💰 Gold collected! +"+reward+" tokens!";
+  else feedback="✅ Correct! +"+reward+" tokens!";
+ }else{
+  button.style.borderColor="#f16a78";
+  feedback="❌ Not quite! The correct answer is: "+currentQuestion.a;
+  if(currentMode==="monster")feedback+=" The monster survives!";
+ }
+ document.getElementById("feedback").textContent=feedback;
+ save();
+ document.getElementById("battleStatus").textContent=currentMode==="monster"?"👾 Monster HP: "+monsterHP+" | Score: "+score:"⭐ Score: "+score;
+ document.getElementById("nextBtn").textContent=round===questionList.length-1?"Finish Round 🏆":"Next Question ➜";
+ document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function nextQuestion(){round++;loadQuestion();}
+
+function endGame(){
+ data.rounds++;save();
+ document.getElementById("roundProgress").style.width="100%";
+ document.getElementById("question").textContent="🎉 ROUND COMPLETE!";
+ document.getElementById("answers").innerHTML="";
+ document.getElementById("feedback").textContent="You scored "+score+" out of "+questionList.length+"! Your tokens are saved.";
+ document.getElementById("battleStatus").textContent="🏆 Great work!";
+ const btn=document.getElementById("nextBtn");
+ btn.textContent="Play Again";
+ btn.classList.remove("hidden");
+ btn.onclick=()=>startGame(currentMode);
+ launchConfetti(100);
+}
+
+function renderBoxes(){
+ const grid=document.getElementById("boxGrid");grid.innerHTML="";
+ boxes.forEach(box=>{
+  const card=document.createElement("div");card.className="tile";
+  const emoji=document.createElement("div");emoji.className="emoji";emoji.textContent=box.emoji;
+  const title=document.createElement("h3");title.textContent=box.name;
+  const cost=document.createElement("p");cost.textContent="Cost: 🪙 "+box.price.toLocaleString()+" tokens";
+  const desc=document.createElement("p");desc.className="muted";desc.textContent="A random character is waiting inside!";
+  const btn=document.createElement("button");btn.className="gold";btn.textContent="OPEN BOX 🎁";
+  btn.onclick=()=>openBox(box);
+  card.append(emoji,title,cost,desc,btn);grid.appendChild(card);
+ });
+}
+
+function openBox(box){
+ if(data.tokens<box.price){
+  showToast("🪙 Not enough tokens! Play a game first.");
+  return;
+ }
+ data.tokens-=box.price;
+ const pool=characters.filter(c=>{
+  if(c.id==="noodle"||data.owned.includes(c.id))return false;
+  return box.tiers.includes(c.rarity);
+ });
+ let prize;
+ if(pool.length){
+  prize=pool[Math.floor(Math.random()*pool.length)];
+ }else{
+  const allPool=characters.filter(c=>c.id!=="noodle"&&!data.owned.includes(c.id));
+  if(allPool.length)prize=allPool[Math.floor(Math.random()*allPool.length)];
+ }
+ data.openedBoxes++;
+ launchConfetti(190);
+ let title,description;
+ if(prize){
+  data.owned.push(prize.id);
+  title="NEW BLOOK UNLOCKED!";
+  description="Rarity: "+prize.rarity+" • Added to your collection!";
+ }else{
+  const refund=Math.floor(box.price*.25);
+  data.tokens+=refund;
+  prize={emoji:"🪙",name:"Duplicate Collection Bonus"};
+  title="COLLECTION COMPLETE!";
+  description="You already collected every box character! You received "+refund+" tokens back.";
+ }
+ save();renderBlooks();renderBoxes();
+ showReward(prize.emoji,title,prize.name,description);
+}
+
+function unlockSecret(){
+ const msg=document.getElementById("secretMessage");
+ if(data.owned.includes("noodle")){
+  msg.textContent="👑 You already own the Secret Noodle Legend!";
+  return;
+ }
+ if(data.tokens<SECRET_PRICE){
+  msg.textContent="You need "+(SECRET_PRICE-data.tokens).toLocaleString()+" more tokens! Keep playing!";
+  return;
+ }
+ data.tokens-=SECRET_PRICE;
+ data.owned.push("noodle");
+ data.unlockedSecret=true;
+ save();renderBlooks();
+ launchConfetti(250);
+ showReward("🍜","SECRET BLOOK UNLOCKED!","Secret Noodle Legend","YOU DID IT! You spent one billion tokens and unlocked the secret character!");
+ msg.textContent="🎉 SECRET BLOOK UNLOCKED!";
+}
+
+function renderBlooks(){
+ const grid=document.getElementById("blookGrid");grid.innerHTML="";
+ characters.filter(c=>data.owned.includes(c.id)).forEach(c=>{
+  const card=document.createElement("div");card.className="tile";
+  const art=document.createElement("div");art.className="character";art.textContent=c.emoji;
+  const name=document.createElement("h3");name.textContent=c.name;
+  const rarity=document.createElement("div");rarity.className="rarity";rarity.textContent=c.rarity;
+  const btn=document.createElement("button");
+  btn.className=data.active===c.id?"green":"primary";
+  btn.textContent=data.active===c.id?"✓ SELECTED":"SELECT BLOOK";
+  btn.onclick=()=>{data.active=c.id;save();renderBlooks();showToast("You selected "+c.name+"!");};
+  card.append(art,name,rarity,btn);grid.appendChild(card);
+ });
+}
+
+function loginAdmin(){
+ const input=document.getElementById("adminPassword");
+ if(input.value===ADMIN_PASSWORD){
+  adminUnlocked=true;
+  document.getElementById("adminLogin").classList.add("hidden");
+  document.getElementById("adminTools").classList.remove("hidden");
+  document.getElementById("adminMessage").textContent="";
+  updateStats();showToast("🔓 Admin demo unlocked!");
+ }else{
+  document.getElementById("adminMessage").textContent="❌ Incorrect password. Try again.";
+ }
+ input.value="";
+}
+document.getElementById("adminPassword").addEventListener("keydown",e=>{
+ if(e.key==="Enter")loginAdmin();
+});
+
+function logoutAdmin(){
+ adminUnlocked=false;
+ document.getElementById("adminTools").classList.add("hidden");
+ document.getElementById("adminLogin").classList.remove("hidden");
+ document.getElementById("adminPassword").value="";
+}
+
+function grantTokens(){
+ if(!adminUnlocked)return;
+ const input=document.getElementById("grantTokens");
+ const amount=Math.floor(Number(input.value));
+ if(!Number.isFinite(amount)||amount<0||input.value===""){
+  showToast("Enter a valid non-negative token amount.");
+  return;
+ }
+ data.tokens=Math.min(Number.MAX_SAFE_INTEGER,data.tokens+amount);
+ save();showToast("🪙 "+amount.toLocaleString()+" tokens added!");
+}
+
+function addQuestion(){
+ if(!adminUnlocked)return;
+ const q=document.getElementById("newQuestion").value.trim();
+ const a=document.getElementById("newAnswer").value.trim();
+ const w=["wrongOne","wrongTwo","wrongThree"].map(id=>document.getElementById(id).value.trim());
+ if(!q||!a||w.some(x=>!x)){
+  showToast("Fill in the question and all four answers.");
+  return;
+ }
+ data.questions.push({q,a,w,s:document.getElementById("newSubject").value});
+ save();
+ ["newQuestion","newAnswer","wrongOne","wrongTwo","wrongThree"].forEach(id=>document.getElementById(id).value="");
+ showToast("🧠 Question added to your local game!");
+}
+
+function resetProgress(){
+ if(!adminUnlocked)return;
+ if(!confirm("Reset ALL Blookoff progress in this browser? This cannot be undone."))return;
+ data=defaultSave();save();renderBlooks();renderBoxes();
+ showPage("home");showToast("Progress reset. Your adventure starts again!");
+}
+
+updateStats();renderBoxes();renderBlooks();
+</script>
+</body>
+</html>
